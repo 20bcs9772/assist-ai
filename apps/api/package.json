@@ -1,0 +1,30 @@
+{
+  "name": "api",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio --port 5556"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^3.0.12",
+    "@hono/node-server": "^1.19.9",
+    "@prisma/adapter-pg": "^7.2.0",
+    "@prisma/client": "^7.2.0",
+    "ai": "^6.0.38",
+    "dotenv": "^17.2.3",
+    "hono": "^4.11.4",
+    "pg": "^8.17.1",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.30",
+    "@types/pg": "^8.16.0",
+    "prisma": "^7.2.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.2"
+  }
+}
