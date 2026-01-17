@@ -11,13 +11,12 @@ export default defineConfig(({ mode }) => {
       },
       plugins: [react()],
       define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'import.meta.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL || 'http://localhost:4000')
       },
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
+          '@api': path.resolve(__dirname, '../api/src'),
         }
       }
     };

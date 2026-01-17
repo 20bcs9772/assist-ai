@@ -13,6 +13,7 @@ import {
 import { Message, Conversation, AgentType } from "../types";
 import { ChatHeaderSkeleton, MessageListSkeleton } from "./Skeletons";
 import { MessageContent } from "./MessageContent";
+import { useThinkingMessage } from "../hooks/useThinkingMessage";
 
 interface ChatWindowProps {
   chat: Conversation | undefined;
@@ -95,6 +96,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const agentInfoRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+
+  const thinkingMessage = useThinkingMessage(isThinking);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -352,7 +355,9 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                       style={{ animationDelay: "300ms" }}
                     ></div>
                   </div>
-                  <span className="ml-2 font-medium">Thinking...</span>
+                  <span className="ml-2 font-medium transition-opacity duration-300">
+                    {thinkingMessage}
+                  </span>
                 </div>
               ) : (
                 <div className="flex space-x-1.5">

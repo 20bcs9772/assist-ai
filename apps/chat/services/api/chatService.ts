@@ -1,51 +1,10 @@
-import apiClient from './client.js';
+import { rpcClient } from './rpcClient.js';
 import { API_URL } from '../../config/api.js';
 
 export interface ChatMessageRequest {
   message: string;
   name: string;
   id?: string;
-}
-
-export interface ConversationResponse {
-  success: boolean;
-  data: {
-    id: string;
-    name: string | null;
-    active: boolean;
-    createdAt: string;
-    updatedAt: string;
-    messages: Array<{
-      role: 'USER' | 'AGENT';
-      content: string;
-      agentType?: 'SUPPORT' | 'ORDER' | 'BILLING';
-    }>;
-  };
-  error?: string;
-}
-
-export interface ConversationListResponse {
-  success: boolean;
-  data: Array<{
-    id: string;
-    name: string | null;
-    active: boolean;
-    createdAt: string;
-    updatedAt: string;
-    messages: Array<{
-      role: 'USER' | 'AGENT';
-      content: string;
-      agentType?: 'SUPPORT' | 'ORDER' | 'BILLING';
-      createdAt: string;
-    }>;
-  }>;
-  error?: string;
-}
-
-export interface DeleteConversationResponse {
-  success: boolean;
-  message?: string;
-  error?: string;
 }
 
 export const chatService = {
@@ -66,19 +25,41 @@ export const chatService = {
     return response;
   },
 
-  async getConversation(id: string): Promise<ConversationResponse> {
-    const response = await apiClient.get<ConversationResponse>(`/api/chat/conversations/${id}`);
-    return response.data;
+  async getConversation(id: string) {
+    const res = await rpcClient['api']['chat']['conversations'][':id'].$get({
+      param: { id },
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ error: 'Failed to fetch conversation' }));
+      throw new Error(error.error || 'Failed to fetch conversation');
+    }
+
+    return res.json();
   },
 
-  async getAllConversations(): Promise<ConversationListResponse> {
-    const response = await apiClient.get<ConversationListResponse>('/api/chat/conversations');
-    return response.data;
+  async getAllConversations() {
+    const res = await rpcClient['api']['chat']['conversations'].$get();
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ error: 'Failed to fetch conversations' }));
+      throw new Error(error.error || 'Failed to fetch conversations');
+    }
+
+    return res.json();
   },
 
-  async deleteConversation(id: string): Promise<DeleteConversationResponse> {
-    const response = await apiClient.delete<DeleteConversationResponse>(`/api/chat/conversations/${id}`);
-    return response.data;
+  async deleteConversation(id: string) {
+    const res = await rpcClient['api']['chat']['conversations'][':id'].$delete({
+      param: { id },
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ error: 'Failed to delete conversation' }));
+      throw new Error(error.error || 'Failed to delete conversation');
+    }
+
+    return res.json();
   },
 };
 

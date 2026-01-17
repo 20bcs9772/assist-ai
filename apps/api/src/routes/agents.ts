@@ -1,4 +1,6 @@
 import { Hono } from "hono";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
 import { AgentTypeSchema } from "../types/schemas.js";
 import { orderTools } from "../tools/order.js";
 import { billingTools } from "../tools/billing.js";
@@ -61,20 +63,19 @@ agents.get("/", async (c) => {
   });
 });
 
-agents.get("/:type/capabilities", async (c) => {
-  const { type } = c.req.param();
-  const validation = AgentTypeSchema.safeParse(type);
+agents.get(
+  "/:type/capabilities",
+  zValidator("param", z.object({ type: AgentTypeSchema })),
+  async (c) => {
+    const { type } = c.req.valid("param");
+    const agent = agentCapabilities[type];
 
-  if (!validation.success) {
-    return c.json({ success: false, error: "Invalid agent type" }, 400);
+    if (!agent) {
+      return c.json({ success: false, error: "Agent not found" }, 404);
+    }
+
+    return c.json({ success: true, data: agent });
   }
-
-  const agent = agentCapabilities[validation.data];
-  if (!agent) {
-    return c.json({ success: false, error: "Agent not found" }, 404);
-  }
-
-  return c.json({ success: true, data: agent });
-});
+);
 
 export default agents;

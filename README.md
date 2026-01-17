@@ -24,6 +24,7 @@ An intelligent multi-agent customer support system built with AI-powered routing
   - [Health](#health)
 - [🗄️ Database Schema](#-database-schema)
   - [Database Management](#database-management)
+- [🔗 Hono RPC (Type-Safe API)](#-hono-rpc-type-safe-api)
 - [🧪 Development](#-development)
   - [Adding a New Agent](#adding-a-new-agent)
   - [Adding a New Tool](#adding-a-new-tool)
@@ -254,6 +255,30 @@ pnpm prisma:studio
 # Seed database
 pnpm seed
 ```
+
+## 🔗 Hono RPC (Type-Safe API)
+
+This project uses **Hono RPC** for end-to-end type safety between the backend and frontend.
+
+### Usage Example
+
+```typescript
+import { rpcClient } from './services/api/rpcClient.js';
+
+// Fully typed API call
+const res = await rpcClient['api']['chat']['conversations'][':id'].$get({
+  param: { id: 'conversation-id' },
+});
+
+const data = await res.json(); // TypeScript knows the response shape!
+```
+
+### Implementation Details
+
+- Backend routes use `zValidator` for type inference
+- Frontend uses `hc<AppType>()` client from `hono/client`
+- `AppType` is exported from the API and imported in the frontend
+- See `HONO_RPC_IMPLEMENTATION.md` for detailed documentation
 
 ## 🧪 Development
 

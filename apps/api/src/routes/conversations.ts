@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { zValidator } from "@hono/zod-validator";
 import { ConversationIdSchema } from "../types/schemas.js";
 import chatService from "../services/chat.js";
 
@@ -24,55 +25,51 @@ conversations.get("/", async (c) => {
   }
 });
 
-conversations.get("/:id", async (c) => {
-  try {
-    const { id } = c.req.param();
-    const validation = ConversationIdSchema.safeParse({ id });
+conversations.get(
+  "/:id",
+  zValidator("param", ConversationIdSchema),
+  async (c) => {
+    try {
+      const { id } = c.req.valid("param");
+      const result = await chatService.getChatById(id);
 
-    if (!validation.success) {
-      return c.json({ success: false, error: "Invalid conversation ID" }, 400);
+      if (!result.success) {
+        return c.json({ success: false, error: result.error }, 404);
+      }
+
+      return c.json({ success: true, data: result.data });
+    } catch (error) {
+      return c.json(
+        { success: false, error: "Failed to fetch conversation" },
+        500
+      );
     }
-
-    const result = await chatService.getChatById(validation.data.id);
-
-    if (!result.success) {
-      return c.json({ success: false, error: result.error }, 404);
-    }
-
-    return c.json({ success: true, data: result.data });
-  } catch (error) {
-    return c.json(
-      { success: false, error: "Failed to fetch conversation" },
-      500
-    );
   }
-});
+);
 
-conversations.delete("/:id", async (c) => {
-  try {
-    const { id } = c.req.param();
-    const validation = ConversationIdSchema.safeParse({ id });
+conversations.delete(
+  "/:id",
+  zValidator("param", ConversationIdSchema),
+  async (c) => {
+    try {
+      const { id } = c.req.valid("param");
+      const result = await chatService.deleteChat(id);
 
-    if (!validation.success) {
-      return c.json({ success: false, error: "Invalid conversation ID" }, 400);
+      if (!result.success) {
+        return c.json({ success: false, error: result.error }, 404);
+      }
+
+      return c.json({
+        success: true,
+        message: "Conversation deleted successfully",
+      });
+    } catch (error) {
+      return c.json(
+        { success: false, error: "Failed to delete conversation" },
+        500
+      );
     }
-
-    const result = await chatService.deleteChat(validation.data.id);
-
-    if (!result.success) {
-      return c.json({ success: false, error: result.error }, 404);
-    }
-
-    return c.json({
-      success: true,
-      message: "Conversation deleted successfully",
-    });
-  } catch (error) {
-    return c.json(
-      { success: false, error: "Failed to delete conversation" },
-      500
-    );
   }
-});
+);
 
 export default conversations;
