@@ -89,7 +89,7 @@ This is a monorepo built with Turborepo and pnpm workspaces, containing:
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/20bcs9772/assist-ai.git
    cd assist-ai
    ```
 
