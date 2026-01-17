@@ -1,135 +1,259 @@
-# Turborepo starter
+# Assist AI
 
-This Turborepo starter is maintained by the Turborepo core team.
+An intelligent multi-agent customer support system built with AI-powered routing and specialized agents for handling orders, billing, and general support queries.
 
-## Using this example
+## 🚀 Features
 
-Run the following command:
+- **Intelligent Routing**: AI-powered router automatically classifies user intent and routes queries to specialized agents
+- **Multi-Agent System**: Three specialized agents:
+  - **Support Agent**: General customer support, FAQs, and account assistance
+  - **Order Agent**: Order management (create, status, cancel, return)
+  - **Billing Agent**: Payment processing, refunds, and billing inquiries
+- **Real-time Streaming**: Server-Sent Events (SSE) for real-time response streaming
+- **Conversation Persistence**: All chats are stored in PostgreSQL with full history
+- **Modern UI**: Beautiful React-based chat interface with dark/light theme support
+- **Tool-based Actions**: Agents can execute real actions (create orders, process payments, etc.)
 
-```sh
-npx create-turbo@latest
+## 🏗️ Architecture
+
+This is a monorepo built with Turborepo and pnpm workspaces, containing:
+
+- **API Backend** (`apps/api`): Hono-based REST API with AI agents
+- **Chat Frontend** (`apps/chat`): React + Vite chat interface
+- **Shared Packages**: Reusable UI components, TypeScript configs, and ESLint configs
+
+### Agent Flow
+
+1. User sends a message → Frontend streams to API
+2. Router Agent classifies intent (SUPPORT/ORDER/BILLING)
+3. Appropriate specialized agent handles the query
+4. Agent can use tools to perform actions (database operations)
+5. Response streams back to user in real-time
+
+## 🛠️ Tech Stack
+
+### Backend
+- **Framework**: [Hono](https://hono.dev/) - Ultra-fast web framework
+- **Database**: PostgreSQL with [Prisma](https://www.prisma.io/) ORM
+- **AI SDK**: [Vercel AI SDK](https://sdk.vercel.ai/) with OpenAI GPT-4o-mini
+- **Runtime**: Node.js with TypeScript
+
+### Frontend
+- **Framework**: React 19
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS (with dark mode)
+- **HTTP Client**: Axios
+- **Markdown**: React Markdown for message rendering
+
+### Infrastructure
+- **Monorepo**: Turborepo
+- **Package Manager**: pnpm
+- **Type Safety**: TypeScript throughout
+
+## 📋 Prerequisites
+
+- **Node.js** >= 18
+- **pnpm** >= 9.0.0
+- **PostgreSQL** database
+- **AI Gateway API Key**
+
+## 🔧 Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd assist-ai
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
+
+3. **Set up environment variables**
+
+   Create `.env` file in `apps/api/`:
+   ```env
+   DATABASE_URL="postgresql://user:password@localhost:5432/assist_ai"
+   AI_GATEWAY_API_KEY="your-ai-gateway-api-key"
+   ```
+
+   Create `.env.local` file in `apps/chat/` (optional, defaults to `http://localhost:4000`):
+   ```env
+   VITE_API_URL="http://localhost:4000"
+   ```
+
+4. **Set up the database**
+   ```bash
+   cd apps/api
+   pnpm prisma:generate
+   pnpm prisma:migrate
+   pnpm seed  # Optional: seed with sample data
+   ```
+
+## 🚦 Running the Project
+
+### Development Mode
+
+Run both API and frontend in development mode:
+
+```bash
+# From root directory
+pnpm dev
 ```
 
-## What's inside?
+Or run individually:
 
-This Turborepo includes the following packages/apps:
+```bash
+# API only (runs on http://localhost:4000)
+pnpm --filter api dev
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+# Frontend only (runs on http://localhost:5173)
+pnpm --filter chat dev
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+### Production Build
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+```bash
+# Build all apps and packages
+pnpm build
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+# Build specific app
+pnpm --filter api build
+pnpm --filter chat build
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+### Start Production Server
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+```bash
+# API
+cd apps/api
+pnpm start
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+# Frontend (after build)
+cd apps/chat
+pnpm preview
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+## 📁 Project Structure
 
 ```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+assist-ai/
+├── apps/
+│   ├── api/                    # Backend API server
+│   │   ├── src/
+│   │   │   ├── agents/         # AI agents (router, support, order, billing)
+│   │   │   ├── controllers/    # Request handlers
+│   │   │   ├── routes/         # API routes
+│   │   │   ├── services/       # Business logic
+│   │   │   ├── tools/          # Agent tools (functions agents can call)
+│   │   │   ├── middleware/     # Rate limiting, etc.
+│   │   │   └── config/         # Database configuration
+│   │   ├── prisma/             # Database schema and migrations
+│   │   └── package.json
+│   │
+│   └── chat/                   # Frontend chat application
+│       ├── src/
+│       │   ├── components/     # React components
+│       │   ├── hooks/          # Custom React hooks
+│       │   ├── services/       # API clients and SSE streaming
+│       │   └── config/         # Frontend configuration
+│       └── package.json
+│   
+│
+├── packages/
+│   ├── ui/                     # Shared UI components
+│   ├── typescript-config/      # Shared TypeScript configs
+│   └── eslint-config/          # Shared ESLint configs
+│
+├── package.json                # Root package.json
+├── turbo.json                  # Turborepo configuration
+└── pnpm-workspace.yaml         # pnpm workspace configuration
 ```
 
-## Useful Links
+## 🔌 API Endpoints
 
-Learn more about the power of Turborepo:
+### Chat
 
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+- `POST /api/chat/messages` - Send a message and get streaming response
+  ```json
+  {
+    "message": "Check my order status",
+    "name": "John Doe",
+    "id": "chat-id" // optional, omit for new chat
+  }
+  ```
+
+- `GET /api/chat/conversations` - Get all conversations
+- `GET /api/chat/conversations/:id` - Get specific conversation
+- `DELETE /api/chat/conversations/:id` - Delete conversation
+
+### Agents
+
+- `GET /api/agents` - List all available agents and their capabilities
+- `GET /api/agents/:type/capabilities` - Get capabilities for specific agent type
+
+### Health
+
+- `GET /health` - Health check endpoint
+
+## 🗄️ Database Schema
+
+The system uses PostgreSQL with the following main models:
+
+- **Chat**: Conversation sessions
+- **Message**: Individual messages (USER/AGENT roles)
+- **Order**: Order management with status tracking
+- **Payment**: Payment records linked to orders
+- **AgentAction**: Logs of agent tool executions
+
+View the full schema in `apps/api/prisma/schema.prisma`.
+
+### Database Management
+
+```bash
+cd apps/api
+
+# Generate Prisma Client
+pnpm prisma:generate
+
+# Run migrations
+pnpm prisma:migrate
+
+# Open Prisma Studio (database GUI)
+pnpm prisma:studio
+
+# Seed database
+pnpm seed
+```
+
+## 🧪 Development
+
+### Adding a New Agent
+
+1. Create agent file in `apps/api/src/agents/`
+2. Create tools in `apps/api/src/tools/`
+3. Add agent to router in `apps/api/src/controllers/chat.ts`
+4. Update `apps/api/src/routes/agents.ts` with capabilities
+
+### Adding a New Tool
+
+1. Define tool in appropriate `apps/api/src/tools/*.ts` file
+2. Add tool to agent's tools array
+3. Implement service function in `apps/api/src/services/`
+
+## 📝 Environment Variables
+
+### API (`apps/api/.env`)
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | Yes |
+| `AI_GATEWAY_API_KEY` | AI Gateway API key for AI models | Yes |
+
+### Frontend (`apps/chat/.env.local`)
+
+| Variable | Description | Required | Default |
+|----------|-------------|----------|---------|
+| `VITE_API_URL` | Backend API URL | No | `http://localhost:4000` |
+
