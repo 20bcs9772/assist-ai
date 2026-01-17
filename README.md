@@ -2,6 +2,34 @@
 
 An intelligent multi-agent customer support system built with AI-powered routing and specialized agents for handling orders, billing, and general support queries.
 
+## 📑 Table of Contents
+
+- [🚀 Features](#-features)
+- [🏗️ Architecture](#-architecture)
+  - [Agent Flow](#agent-flow)
+- [🛠️ Tech Stack](#-tech-stack)
+  - [Backend](#backend)
+  - [Frontend](#frontend)
+  - [Infrastructure](#infrastructure)
+- [📋 Prerequisites](#-prerequisites)
+- [🔧 Installation](#-installation)
+- [🚦 Running the Project](#-running-the-project)
+  - [Development Mode](#development-mode)
+  - [Production Build](#production-build)
+  - [Start Production Server](#start-production-server)
+- [📁 Project Structure](#-project-structure)
+- [🔌 API Endpoints](#-api-endpoints)
+  - [Chat](#chat)
+  - [Agents](#agents)
+  - [Health](#health)
+- [🗄️ Database Schema](#-database-schema)
+  - [Database Management](#database-management)
+- [🧪 Development](#-development)
+  - [Adding a New Agent](#adding-a-new-agent)
+  - [Adding a New Tool](#adding-a-new-tool)
+- [📝 Environment Variables](#-environment-variables)
+
+
 ## 🚀 Features
 
 - **Intelligent Routing**: AI-powered router automatically classifies user intent and routes queries to specialized agents
