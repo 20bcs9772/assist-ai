@@ -1,5 +1,4 @@
 {
-  "name": "Gemini Streaming Chat Interface",
-  "description": "A high-performance, dark-themed chat application featuring real-time streaming using Gemini 3 Flash, with persistent conversation history and a sleek Slate/Orange visual design.",
+  "name": "Assist AI",
   "requestFramePermissions": []
 }
