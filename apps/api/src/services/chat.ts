@@ -83,6 +83,43 @@ class ChatService {
       },
     });
   }
+
+  async getAllChats() {
+    const chats = await prisma.chat.findMany({
+      include: {
+        messages: {
+          select: {
+            role: true,
+            content: true,
+            agentType: true,
+            createdAt: true,
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
+
+    return chats;
+  }
+
+  async deleteChat(id: string) {
+    const chat = await prisma.chat.findUnique({ where: { id } });
+
+    if (!chat) {
+      throw new Error("Chat not found");
+    }
+
+    await prisma.chat.delete({
+      where: { id },
+    });
+
+    return { success: true };
+  }
 }
 
 export default new ChatService();
