@@ -278,7 +278,6 @@ const data = await res.json(); // TypeScript knows the response shape!
 - Backend routes use `zValidator` for type inference
 - Frontend uses `hc<AppType>()` client from `hono/client`
 - `AppType` is exported from the API and imported in the frontend
-- See `HONO_RPC_IMPLEMENTATION.md` for detailed documentation
 
 ## 🧪 Development
 
