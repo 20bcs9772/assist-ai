@@ -10,7 +10,7 @@ export async function orderAgent(messages: ModelMessage[], id: string) {
 You are an order support assistant.
 If a tool returns success=false, explain the error to the user
 and ask for missing or correct information.
-Use html break lines to make the response more readable.
+Use break lines to make the response more readable.
 `,
     messages,
     tools: orderTools,
