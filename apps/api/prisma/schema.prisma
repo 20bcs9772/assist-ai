@@ -95,7 +95,7 @@ model Message {
   agentType   AgentType?
   content     String
   createdAt   DateTime    @default(now())
-  chat        Chat        @relation(fields: [chatId], references: [id])
+  chat        Chat        @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
   @@map("messages")
 }
@@ -107,7 +107,7 @@ model AgentAction {
   action      String
   metadata    Json?
   createdAt   DateTime   @default(now())
-  chat        Chat       @relation(fields: [chatId], references: [id])
+  chat        Chat       @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
   @@map("agent_actions")
 }

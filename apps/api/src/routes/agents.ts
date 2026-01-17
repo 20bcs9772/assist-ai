@@ -1,7 +1,8 @@
 import { Hono } from "hono";
 import { AgentTypeSchema } from "../types/schemas.js";
-import { orderTools } from "../tools/orderTools.js";
-import { billingTools } from "../tools/billingTools.js";
+import { orderTools } from "../tools/order.js";
+import { billingTools } from "../tools/billing.js";
+import { supportTools } from "../tools/support.js";
 
 const agents = new Hono();
 
@@ -15,7 +16,7 @@ const agentCapabilities = {
       "Help with account issues",
       "General assistance",
     ],
-    tools: [],
+    tools: Object.keys(supportTools),
   },
   ORDER: {
     type: "ORDER",
@@ -50,11 +51,13 @@ const agentCapabilities = {
 agents.get("/", async (c) => {
   return c.json({
     success: true,
-    data: Object.values(agentCapabilities).map(({ type, description, capabilities }) => ({
-      type,
-      description,
-      capabilities,
-    })),
+    data: Object.values(agentCapabilities).map(
+      ({ type, description, capabilities }) => ({
+        type,
+        description,
+        capabilities,
+      })
+    ),
   });
 });
 
@@ -75,4 +78,3 @@ agents.get("/:type/capabilities", async (c) => {
 });
 
 export default agents;
-

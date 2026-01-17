@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { stepCountIs, streamText, type ModelMessage } from "ai";
 import chatService from "../services/chat.js";
-import { orderTools } from "../tools/orderTools.js";
+import { orderTools } from "../tools/order.js";
 
 export async function orderAgent(messages: ModelMessage[], id: string) {
   return streamText({

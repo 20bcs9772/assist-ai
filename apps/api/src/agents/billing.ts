@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { stepCountIs, streamText, type ModelMessage } from "ai";
 import chatService from "../services/chat.js";
-import { billingTools } from "../tools/billingTools.js";
+import { billingTools } from "../tools/billing.js";
 
 export async function billingAgent(messages: ModelMessage[], id: string) {
   return streamText({
