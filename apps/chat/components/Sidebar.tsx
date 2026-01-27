@@ -11,6 +11,8 @@ interface SidebarProps {
   theme: "light" | "dark";
   onToggleTheme: () => void;
   isLoading?: boolean;
+  mobile?: boolean;
+  onClose?: () => void;
 }
 
 const getInitials = (name: string) => {
@@ -47,6 +49,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   theme,
   onToggleTheme,
   isLoading = false,
+  mobile = false,
+  onClose,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [newName, setNewName] = useState("");
@@ -61,18 +65,36 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   return (
-    <aside className="w-[280px] h-full bg-slate-100/30 dark:bg-slate-900/50 flex flex-col border-r border-slate-200 dark:border-white/5 transition-colors duration-500 relative">
-      <div className="p-8 flex items-center justify-between">
+    <aside
+      className={[
+        "w-[280px] h-full bg-slate-100/30 dark:bg-slate-900/50 flex flex-col border-r border-slate-200 dark:border-white/5 transition-colors duration-500 relative",
+        mobile ? "shadow-2xl" : "",
+      ].join(" ")}
+    >
+      <div className="p-6 md:p-8 flex items-center justify-between">
         <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-orange-500" />
           Assist-AI
         </h1>
-        <button
-          onClick={() => setShowModal(true)}
-          className="p-2 text-slate-400 hover:text-orange-500 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/5 rounded-full transition-all"
-        >
-          <Plus size={20} />
-        </button>
+        <div className="flex items-center gap-1">
+          {mobile && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-2 text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/5 rounded-full transition-all"
+              aria-label="Close sidebar"
+            >
+              <X size={20} />
+            </button>
+          )}
+          <button
+            onClick={() => setShowModal(true)}
+            className="p-2 text-slate-400 hover:text-orange-500 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/5 rounded-full transition-all"
+            aria-label="New chat"
+          >
+            <Plus size={20} />
+          </button>
+        </div>
       </div>
 
       {isLoading ? (

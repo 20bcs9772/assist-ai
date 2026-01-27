@@ -9,6 +9,7 @@ import {
   ChevronDown,
   Infinity,
   Info,
+  PanelLeft,
 } from "lucide-react";
 import { Message, Conversation, AgentType } from "../types";
 import { ChatHeaderSkeleton, MessageListSkeleton } from "./Skeletons";
@@ -24,6 +25,7 @@ interface ChatWindowProps {
   theme: "light" | "dark";
   onToggleTheme: () => void;
   isLoading?: boolean;
+  onOpenSidebar?: () => void;
 }
 
 const AGENTS: Record<
@@ -79,6 +81,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   theme,
   onToggleTheme,
   isLoading = false,
+  onOpenSidebar,
 }) => {
   const [input, setInput] = useState("");
   const [showOptions, setShowOptions] = useState(false);
@@ -199,7 +202,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       <div className="flex-1 flex flex-col h-full bg-transparent">
         <ChatHeaderSkeleton />
         <MessageListSkeleton count={4} />
-        <div className="px-6 pb-4 pt-2 shrink-0">
+        <div className="px-4 sm:px-6 lg:px-6 pb-4 pt-2 shrink-0">
           <div className="max-w-4xl mx-auto">
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl p-4 animate-pulse">
               <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded-lg mb-4"></div>
@@ -217,7 +220,15 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   if (!chat) {
     return (
       <div className="flex-1 flex flex-col h-full bg-transparent">
-        <header className="h-20 flex items-center justify-end px-10 border-b border-slate-200 dark:border-white/5">
+        <header className="h-20 flex items-center justify-between px-4 sm:px-6 lg:px-10 border-b border-slate-200 dark:border-white/5">
+          <button
+            type="button"
+            onClick={onOpenSidebar}
+            className="p-2 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors md:hidden"
+            aria-label="Open sidebar"
+          >
+            <PanelLeft size={20} />
+          </button>
           <button
             onClick={onToggleTheme}
             className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-white/5 text-slate-500 dark:text-slate-400 hover:text-orange-500 dark:hover:text-white transition-all"
@@ -246,8 +257,16 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden relative">
       {/* Header */}
-      <header className="h-20 flex items-center justify-between px-10 border-b border-slate-200 dark:border-white/5 bg-transparent shrink-0">
+      <header className="h-20 flex items-center justify-between px-4 sm:px-6 lg:px-10 border-b border-slate-200 dark:border-white/5 bg-transparent shrink-0">
         <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={onOpenSidebar}
+            className="p-2 -ml-2 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors md:hidden"
+            aria-label="Open sidebar"
+          >
+            <PanelLeft size={20} />
+          </button>
           <div className="relative">
             <div
               className={`w-10 h-10 rounded-2xl flex items-center justify-center text-white text-xl font-bold ring-1 ring-slate-200 dark:ring-white/10 ${getAvatarColor(chat.name)}`}
@@ -300,7 +319,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       {/* Messages */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto px-10 py-8 space-y-8 scroll-smooth"
+        className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 space-y-6 sm:space-y-8 scroll-smooth"
       >
         {chat.messages.map((msg) => (
           <div
@@ -308,7 +327,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             className={`flex ${msg.role === "USER" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[70%] ${msg.role === "USER" ? "items-end" : "items-start"} group`}
+              className={`max-w-[85%] sm:max-w-[70%] ${msg.role === "USER" ? "items-end" : "items-start"} group`}
             >
               <div
                 className={`px-5 py-4 rounded-[1.75rem] text-[0.9375rem] leading-relaxed shadow-lg ${msg.role === "USER" ? "bg-orange-500 text-white rounded-tr-none shadow-orange-500/20" : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-200 dark:border-white/5"}`}
@@ -381,7 +400,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       </div>
 
       {/* Input Area */}
-      <div className="px-6 pb-4 pt-2 shrink-0">
+      <div className="px-4 sm:px-6 lg:px-6 pb-4 pt-2 shrink-0">
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto relative">
           {/* Tooltip for Hovered Agent Info Icon */}
           {hoveredAgent && tooltipPosition && (

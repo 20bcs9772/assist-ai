@@ -38,7 +38,7 @@ export const MessageSkeleton: React.FC<{ isUser?: boolean }> = ({ isUser = false
 
 export const ChatHeaderSkeleton: React.FC = () => {
   return (
-    <header className="h-20 flex items-center justify-between px-10 border-b border-slate-200 dark:border-white/5 bg-transparent shrink-0 animate-pulse">
+    <header className="h-20 flex items-center justify-between px-4 sm:px-6 lg:px-10 border-b border-slate-200 dark:border-white/5 bg-transparent shrink-0 animate-pulse">
       <div className="flex items-center gap-4">
         <div className="relative">
           <div className="w-10 h-10 rounded-2xl bg-slate-200 dark:bg-slate-700"></div>
@@ -69,7 +69,7 @@ export const ConversationListSkeleton: React.FC<{ count?: number }> = ({ count =
 
 export const MessageListSkeleton: React.FC<{ count?: number }> = ({ count = 3 }) => {
   return (
-    <div className="flex-1 overflow-y-auto px-10 py-8 space-y-8">
+    <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 space-y-6 sm:space-y-8">
       {Array.from({ length: count }).map((_, idx) => (
         <MessageSkeleton key={idx} isUser={idx % 2 === 0} />
       ))}
